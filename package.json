@@ -1,0 +1,23 @@
+{
+  "name": "boombox-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": true,
+  "scripts": {
+    "start": "node index.js",
+    "build:client": "cd ./boombox-client; npm install; npm run build; cp -r ./build ../build; cd -",
+    "deploy": "npm run build:client; git add -f build spotify-secrets.json && git commit -am temp-depoy-commit && git push -f heroku master && git rm spotify-secrets.json && git reset --hard origin/master"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "buckets-js": "^1.98.2",
+    "express": "^4.16.2",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.2",
+    "spotify-web-api-node": "^2.5.0",
+    "rxjs": "^5.5.2"
+  }
+}
