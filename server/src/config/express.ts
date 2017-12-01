@@ -5,6 +5,9 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 import * as proxy from 'http-proxy-middleware';
+import * as Jwt from 'jwt-express'
+
+import { startRoutes } from '../routes'
 
 export default function(db) {
     let app: express.Express = express();
@@ -25,10 +28,13 @@ export default function(db) {
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "../../src/public")));
 
-    //Routes
-    for (let route of config.globFiles(config.routes)) {
-        require(path.resolve(route)).default(app);
+    if (app.get("env") === "development") {
+      const apiProxy = proxy('!/api/**', {target: 'http://localhost:3001'});
+      app.use('/', apiProxy);
     }
+
+    //Routes
+    startRoutes(app)
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {
@@ -45,9 +51,6 @@ export default function(db) {
     });
 
     if (app.get("env") === "development") {
-      const apiProxy = proxy('!/api/**', {target: 'http://localhost:3001'});
-      app.use('/', apiProxy);
-
         app.use((err: Error, req: express.Request, res: express.Response, next): void => {
             res.status(500).render("error", {
                 message: err.message,
