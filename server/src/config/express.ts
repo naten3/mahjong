@@ -9,8 +9,6 @@ import * as proxy from 'http-proxy-middleware';
 export default function(db) {
     let app: express.Express = express();
 
-    const apiProxy = proxy('!/api/**', {target: 'http://localhost:3001'});
-
     //Models
     for (let model of config.globFiles(config.models)) {
         require(path.resolve(model));
@@ -26,7 +24,6 @@ export default function(db) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "../../src/public")));
-    app.use('/', apiProxy);
 
     //Routes
     for (let route of config.globFiles(config.routes)) {
@@ -48,6 +45,9 @@ export default function(db) {
     });
 
     if (app.get("env") === "development") {
+      const apiProxy = proxy('!/api/**', {target: 'http://localhost:3001'});
+      app.use('/', apiProxy);
+
         app.use((err: Error, req: express.Request, res: express.Response, next): void => {
             res.status(500).render("error", {
                 message: err.message,
