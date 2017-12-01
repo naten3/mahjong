@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var index_server_controller_1 = require("../controllers/index.server.controller");
 var IndexRoute = /** @class */ (function () {
     function IndexRoute(app) {
-        app.route("/")
+        app.route("/api")
             .get(index_server_controller_1.default.read);
     }
     return IndexRoute;

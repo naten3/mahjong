@@ -4,9 +4,12 @@ import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
+import * as proxy from 'http-proxy-middleware';
 
 export default function(db) {
-    var app: express.Express = express();
+    let app: express.Express = express();
+
+    const apiProxy = proxy('!/api/**', {target: 'http://localhost:3001'});
 
     //Models
     for (let model of config.globFiles(config.models)) {
@@ -23,6 +26,7 @@ export default function(db) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "../../src/public")));
+    app.use('/', apiProxy);
 
     //Routes
     for (let route of config.globFiles(config.routes)) {

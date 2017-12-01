@@ -6,8 +6,10 @@ var cookieParser = require("cookie-parser");
 var express = require("express");
 var logger = require("morgan");
 var path = require("path");
+var proxy = require("http-proxy-middleware");
 function default_1(db) {
     var app = express();
+    var apiProxy = proxy('!/api/**', { target: 'http://localhost:3001' });
     //Models
     for (var _i = 0, _a = config_1.default.globFiles(config_1.default.models); _i < _a.length; _i++) {
         var model = _a[_i];
@@ -22,6 +24,7 @@ function default_1(db) {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "../../src/public")));
+    app.use('/', apiProxy);
     //Routes
     for (var _b = 0, _c = config_1.default.globFiles(config_1.default.routes); _b < _c.length; _b++) {
         var route = _c[_b];
