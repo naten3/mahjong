@@ -5,7 +5,7 @@ import { } from 'redux';
 import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines';
 import * as _ from 'lodash';
 
-import { RootState, Weather, ForecastSnapshot } from '../models'
+import { Weather, ForecastSnapshot } from '../models'
 import {  } from '../actions';
 
 class WeatherListContainer extends Component<WeatherListProps, any> {
@@ -57,11 +57,11 @@ class WeatherListContainer extends Component<WeatherListProps, any> {
   }
 }
 
-function mapStateToProps({weather}: RootState) {
-  return {weather};
-}
-
-export default connect(mapStateToProps)(WeatherListContainer);
+//function mapStateToProps( rootState: RootState) {
+//  return {weather: []};
+//}
+// @ts-ignore: 2nd arg is an object of action creators wrapped in dispatch calls
+export default connect(null)(WeatherListContainer);
 
 
 export interface WeatherListMapProps {

@@ -14,9 +14,9 @@ export class UserService {
   }
 
 // returns jwt
-  public signIn(name: string): string {
+  public signIn(name: string): TokenPayload {
     let id = this.nextId();
-    let token = Jwt.create(this.secret, new JwtPayloadImpl(id));
+    let token: TokenPayload = Jwt.create(this.secret, new JwtPayloadImpl(id));
     this.userMap.set(id, new User(id, name));
     return token;
   }
@@ -24,8 +24,6 @@ export class UserService {
   public getUserFromId(id: number): User | undefined {
     return this.userMap.get(id);
   }
-
-
 
   private nextId(): number {
     let id = this.id;
@@ -44,4 +42,8 @@ export class JwtPayloadImpl implements JwtPayload {
   constructor(id: number) {
     this.id = id;
   }
+}
+
+interface TokenPayload{
+  token: string;
 }

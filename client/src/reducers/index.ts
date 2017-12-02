@@ -1,9 +1,11 @@
 import { combineReducers, Reducer } from 'redux';
-import { weatherReduce } from './weather.reducer';
+import { authenticatedReduce } from './authenticated.reducer';
+import { websocketOpenReduce } from './websocket-open.reducer';
 import { RootState } from '../models'
 
 const rootReducer: Reducer<RootState> = combineReducers<any>({
-    weather: weatherReduce
+    token: authenticatedReduce,
+    websocketOpen: websocketOpenReduce
   });
 
 export default rootReducer;

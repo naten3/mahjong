@@ -50,6 +50,7 @@
     "react-router-dom": "^4.1.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.18.2",
+    "socksjs-client": "^1.1.4",
     "ts-jest": "^20.0.6",
     "ts-loader": "^2.2.2",
     "tslint": "^5.5.0",

@@ -1,5 +1,4 @@
-import { Weather } from '../models';
-
 export interface RootState {
-  weather: Array<Weather>;
+  token?: string;
+  websocketOpen: boolean;
 }

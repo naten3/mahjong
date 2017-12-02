@@ -1,5 +1,5 @@
 import * as bodyParser from "body-parser";
-import config from "./config";
+import {Config} from "./config";
 import * as cookieParser from "cookie-parser";
 import * as express from "express";
 import * as logger from "morgan";
@@ -7,13 +7,21 @@ import * as path from "path";
 import * as proxy from 'http-proxy-middleware';
 import * as Jwt from 'jwt-express'
 
-import { startRoutes } from '../routes'
+import { IndexRoute, UserRoute } from '../routes';
+import { UserService } from '../services';
+
+let secret: String = '4'// Math.floor(Math.random() * 1000).toString();
+console.log(`The secret is ${secret}`) //todo remove debug code
 
 export default function(db) {
+    //service initializations TODO DI?
+    let userService: UserService = new UserService(secret);
+
+
     let app: express.Express = express();
 
     //Models
-    for (let model of config.globFiles(config.models)) {
+    for (let model of Config.globFiles(Config.models)) {
         require(path.resolve(model));
     }
 
@@ -33,8 +41,11 @@ export default function(db) {
       app.use('/', apiProxy);
     }
 
+    app.use(Jwt.init(secret, {cookies: false}));
+
     //Routes
-    startRoutes(app)
+    new IndexRoute(app);
+    new UserRoute(app, userService);
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {

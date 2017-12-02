@@ -2,7 +2,7 @@ import Axios, {AxiosResponse} from 'axios';
 
 import { Action } from 'redux';
 
-import { Weather, WsPayload } from '../models';
+import { Weather, WsPayload, TokenResponse } from '../models';
 
 const API_KEY='5fe0935d1398f3033936b734d3839dc7';
 const ROOT_URL=`https://api.openweathermap.org/data/2.5/forecast?appid=${API_KEY}`;
@@ -19,6 +19,8 @@ export function fetchWeather(city: String): PromiseAction<AxiosResponse<Weather>
 
 export enum ActionTypeKeys {
   FETCH_WEATHER = 'FETCH_WEATHER',
+  SIGN_IN = 'SIGN_IN',
+  SIGN_OUT = 'SIGN_OUT',
   SOCKET_RECEIVE = 'SOCKET_RECEIVE',
   SOCKET_SEND = 'SOCKET_SEND',
   WS_CONNECT = 'WS_CONNECT',
@@ -36,9 +38,22 @@ export interface FetchWeatherAction extends PayloadAction<AxiosResponse<Weather>
   type: ActionTypeKeys.FETCH_WEATHER;
 }
 
+export interface SignInAction extends PayloadAction<AxiosResponse<TokenResponse>> {
+  type: ActionTypeKeys.SIGN_IN;
+}
+
+export interface SignOutAction extends Action<ActionTypeKeys> {
+  type: ActionTypeKeys.SIGN_OUT;
+}
+
 export interface PromiseAction<T, _ extends PayloadAction<T>> {
   payload: Promise<T>;
   type: ActionTypeKeys;
+}
+
+//axios response with middleware will have this payload
+export interface ApiResponseAction<T> extends PayloadAction<Promise<AxiosResponse<T>>> {
+  payload: Promise<AxiosResponse<T>>
 }
 
 // websockets action
@@ -72,6 +87,8 @@ export interface WSDisconnectedAction extends Action<ActionTypeKeys> {
 
 export type ActionTypes =
    | FetchWeatherAction
+   | SignInAction
+   | SignOutAction
    | SocketReceiveAction
    | SocketSendAction
    | WSConnectAction

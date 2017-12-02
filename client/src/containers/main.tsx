@@ -1,44 +1,49 @@
 import * as React from 'react';
 import { Dispatch, bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import SearchBar from './search_bar.container';
-import WeatherList from './weather_list.container';
+import Join from './join.container';
 // import * as _ from 'lodash';
 
-import { } from '../models';
+import { RootState } from '../models';
 import { WSConnectAction, ActionTypeKeys } from '../actions';
 
 class Main extends React.Component<MainProps, any> {
 
   public render() {
-    this.props.websocketConnect();
+    if (this.props.token && !this.props.websocketOpen) {
+      console.log("websocket is not open, connecting")
+      this.props.websocketConnect(this.props.token);
+    }
 
     return (
       <div>
-         <SearchBar />
-         <WeatherList />
+         <Join />
       </div>
     );
   }
 }
 
-function websocketConnect(): WSConnectAction {
-  return {type: ActionTypeKeys.WS_CONNECT, payload: 'nate'};
+function websocketConnect(token: string): WSConnectAction {
+  return {type: ActionTypeKeys.WS_CONNECT, payload: token};
 }
 
-
+function mapStateToProps(state: RootState) {
+  return { token: state.token, websocketOpen: state.websocketOpen };
+}
 
 function mapDispatchToProps(dispatch: Dispatch<any>): MainDispProps  {
   return bindActionCreators({ websocketConnect }, dispatch);
 }
 
  // @ts-ignore: first arg needs to be optional, type bug
-export default connect(null, mapDispatchToProps)(Main);
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
 
 export interface MainMapProps {
+  token?: string,
+  websocketOpen: boolean
 }
 export interface MainDispProps {
-  websocketConnect: () => WSConnectAction;
+  websocketConnect: (string) => WSConnectAction;
 };
 export type MainProps =
     MainMapProps & MainDispProps;
