@@ -2,7 +2,7 @@ import * as SockJs from 'sockjs'
 import { Connection } from 'sockjs'
 import * as http from 'http'
 import { Subject, Observable, ReplaySubject, BehaviorSubject } from 'rxjs'
-import * as Jwt from 'jwt-express'
+import * as JsonWebToken from 'jsonwebtoken';
 
 
 export class UserWebsocket {
@@ -17,11 +17,23 @@ export class UserWebsocket {
 }
 
 export class WebsocketService {
+
+  private secret: string;
   readonly PREFIX_URL = '/api/ws'
 
    //TODO can I make this a big observable?
   clients: Map<number, UserWebsocket> = new Map();
   clientChangeObservable = new BehaviorSubject(new Map<number, UserWebsocket>());
+
+  onlineUsers: BehaviorSubject<Map<number, UserWebsocket>>  = new BehaviorSubject(new Map);
+
+  socksJsServer;
+
+  constructor(secret: string) {
+    this.secret = secret;
+    this.socksJsServer = SockJs.createServer({prefix: this.PREFIX_URL});
+    this.socksJsServer.on('connection', conn => this.onConnection(conn))
+  }
 
   addUser(userId: number, uws: UserWebsocket) {
     console.log(`adding user with id ${userId}`)
@@ -33,15 +45,6 @@ export class WebsocketService {
     console.log(`removing user with id ${userId}`)
     this.clients.delete(userId)
     this.clientChangeObservable.next(this.clients);
-  }
-
-  onlineUsers: BehaviorSubject<Map<number, UserWebsocket>>  = new BehaviorSubject(new Map);
-
-  socksJsServer;
-
-  constructor() {
-    this.socksJsServer = SockJs.createServer({prefix: this.PREFIX_URL});
-    this.socksJsServer.on('connection', conn => this.onConnection(conn))
   }
 
   private onConnection(connection: Connection) {
@@ -57,8 +60,9 @@ export class WebsocketService {
     let obj = JSON.parse(message);
     if (obj.token ) {
       console.log("got token to authenticate user")
-      //TODO parse id validate token
-      let id = 1
+      try {
+      let payload = JsonWebToken.verify(obj.token, this.secret);
+      let id = payload.id;
 
       let messageSubject: Subject<string> = new Subject();
       messageSubject.subscribe(message => connection.write(message))
@@ -67,6 +71,10 @@ export class WebsocketService {
       connection.on('close', () => this.authenticatedOnClose(id));
 
       this.addUser(id, new UserWebsocket(id,  messageSubject));
+      } catch (error){
+        //TODO
+        console.log("Got an error parsing token")
+      }
     }
   }
 

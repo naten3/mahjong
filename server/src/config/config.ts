@@ -8,6 +8,7 @@ export class Config {
 	public static models: string = "./dist/models/**/*.js";
 	//TODO where should this live
 	public static requireId = Jwt.require('id');
+	public static validToken = Jwt.valid()
 
 	public static globFiles(location: string): string[] {
 		return union([], sync(location));

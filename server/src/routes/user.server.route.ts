@@ -4,7 +4,6 @@ import {Config} from '../config/config'
 import {UserController, IndexController} from "../controllers/";
 import {UserService} from '../services';
 
-//TODO this doesn't validate the token wtf
 export class UserRoute {
 	userController: UserController;
 	constructor(app: Express, userService: UserService) {

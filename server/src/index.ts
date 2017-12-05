@@ -4,9 +4,13 @@ import {Config} from "./config/config";
 import { WebsocketService } from './services';
 
 
-let websocketService: WebsocketService = new WebsocketService();
+let secret: string = '4'// Math.floor(Math.random() * 1000).toString();
+console.log(`The secret is ${secret}`) //todo remove debug code
+
+let websocketService: WebsocketService = new WebsocketService(secret);
+
 // Init the express application
-const app = require("./config/express").default();
+const app = require("./config/express").default(websocketService, secret);
 
 const server: http.Server = http.createServer(app);
 
