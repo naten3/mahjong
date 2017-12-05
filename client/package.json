@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=dev node dev.server.js",
     "build": "cross-env NODE_ENV=prod webpack",
-    "watch" : "cross-env NODE_ENV=dev webpack --watch --output-path=\"../public\"",
+    "watch": "cross-env NODE_ENV=dev webpack --watch --output-path=\"../public\"",
     "test": "jest",
     "lint": "tslint 'src/**/*.{ts,tsx}'"
   },
@@ -50,7 +50,6 @@
     "react-router-dom": "^4.1.1",
     "react-transform-hmr": "^1.0.4",
     "style-loader": "^0.18.2",
-    "socksjs-client": "^1.1.4",
     "ts-jest": "^20.0.6",
     "ts-loader": "^2.2.2",
     "tslint": "^5.5.0",
@@ -62,6 +61,7 @@
     "whatwg-fetch": "^2.0.2"
   },
   "dependencies": {
+    "@types/sockjs-client": "^1.0.32",
     "aphrodite": "^1.1.0",
     "axios": "^0.17.1",
     "json2typescript": "^1.0.5",
@@ -73,6 +73,7 @@
     "react-sparklines": "^1.7.0",
     "redux": "v4.0.0-beta.1",
     "redux-logger": "^3.0.6",
-    "redux-promise": "^0.5.3"
+    "redux-promise": "^0.5.3",
+    "sockjs-client": "^1.1.4"
   }
 }

@@ -47,7 +47,7 @@ class Join extends Component<JoinProps, JoinState> {
   }
 
   private authenticationMessage(authenticated: boolean) {
-    if (authenticated) {
+    if (this.props.token) {
     return <span> AUTHENTICATED!!! </span>;
   } else {
     return <span> NOT AUTHENTICATED!!! </span>;

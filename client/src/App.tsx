@@ -19,14 +19,14 @@ const env = process.env.NODE_ENV;
 
 function _getUrl() {
   const loc = window.location;
-  let protocol;
-  if (loc.protocol === 'https:') {
-    protocol = 'wss:';
-  } else {
-    protocol = 'ws:';
-  }
+  //let protocol;
+  //if (loc.protocol === 'https:') {
+  //  protocol = 'wss:';
+  //} else {
+  //  protocol = 'ws:';
+  //}
 
-  return `${protocol}//${loc.host}/ws`;
+  return `${loc.protocol}//${loc.host}/api/ws`;
 }
 
 

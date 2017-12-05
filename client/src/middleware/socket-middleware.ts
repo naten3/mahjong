@@ -1,14 +1,15 @@
 import { } from 'redux';
+import * as SockJS from 'sockjs-client';
 
 import { WsPayload } from '../models'
 import { ActionTypeKeys } from '../actions';
 
 export const socketMiddleware = (function(socketUrl: string) {
-  var socket;
+  var socketClient;
 
-  const onOpen = (socket: WebSocket, store,username) => evt => {
+  const onOpen = (socketClient, store,token) => evt => {
     //Send a handshake, or authenticate with remote end
-    socket.send(JSON.stringify({type: 'setName', name: username}));
+    socketClient.send(JSON.stringify({ token: token}));
     //Tell the store we're connected
     store.dispatch({type: ActionTypeKeys.WS_CONNECTED});
   }
@@ -28,28 +29,28 @@ export const socketMiddleware = (function(socketUrl: string) {
     switch(action.type) {
 
       case ActionTypeKeys.SOCKET_SEND:
-        socket.send(JSON.stringify(action.payload));
+        socketClient.send(JSON.stringify(action.payload));
         break;
       //The user wants us to connect
       case ActionTypeKeys.WS_CONNECT:
         //Start a new connection to the server
-        if(socket) {
-          socket.close();
+        if(socketClient) {
+          socketClient.close();
         }
         //Attempt to connect (we could send a 'failed' action on error)
-        socket = new WebSocket(socketUrl);
-        socket.onmessage = onMessage(store);
-        socket.onclose = onClose(store);
-        socket.onopen = onOpen(socket, store,action.payload);
+        socketClient = new SockJS(socketUrl);
+        socketClient.onmessage = onMessage(store);
+        socketClient.onclose = onClose(store);
+        socketClient.onopen = onOpen(socketClient, store,action.payload);
 
         break;
 
       //The user wants us to disconnect
       case ActionTypeKeys.WS_DISCONNECT:
-        if(socket) {
-          socket.close();
+        if(socketClient) {
+          socketClient.close();
         }
-        socket = null;
+        socketClient = null;
         break;
 
       //This action is irrelevant to us, pass it on to the next middleware

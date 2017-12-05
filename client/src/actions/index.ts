@@ -68,6 +68,7 @@ export interface SocketSendAction extends PayloadAction<WsPayload> {
   payload: WsPayload
 }
 
+// payload is token
 export interface WSConnectAction extends PayloadAction<string> {
   type: ActionTypeKeys.WS_CONNECT;
   payload: string;

@@ -8,15 +8,15 @@ import * as proxy from 'http-proxy-middleware';
 import * as Jwt from 'jwt-express'
 
 import { IndexRoute, UserRoute } from '../routes';
-import { UserService } from '../services';
+import { UserService, WebsocketService} from '../services';
 
 let secret: String = '4'// Math.floor(Math.random() * 1000).toString();
 console.log(`The secret is ${secret}`) //todo remove debug code
 
-export default function(db) {
+export default function(db, websocketService: WebsocketService) {
     //service initializations TODO DI?
     let userService: UserService = new UserService(secret);
-
+    //let websocketService: WebsocketService = new WebsocketService();
 
     let app: express.Express = express();
 
