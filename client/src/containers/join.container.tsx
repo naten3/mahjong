@@ -2,6 +2,7 @@ import { Component, FormEvent } from 'react';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
+import { Redirect } from 'react-router-dom'
 
 import { TokenResponse, RootState } from '../models'
 import { ApiResponseAction } from '../actions';
@@ -28,11 +29,15 @@ class Join extends Component<JoinProps, JoinState> {
   }
 
   public render() {
-    if (!this.props.websocketOpen) {
-      return this.nameMessage();
+    if (this.props.gameStarted) {
+      return <Redirect to='/active-game'/>;
     } else {
-      //TODO maybe another route when I have internet to research
-      return this.waitingForPlayers(this.props.playersWaiting)
+      if (!this.props.websocketOpen) {
+        return this.nameMessage();
+      } else {
+        //TODO maybe another route when I have internet to research
+        return this.waitingForPlayers(this.props.playersWaiting);
+      }
     }
   }
 
@@ -61,7 +66,8 @@ class Join extends Component<JoinProps, JoinState> {
 function mapStateToProps(state: RootState): JoinMapProps {
   return { token: state.token,
     websocketOpen: state.websocketOpen,
-     playersWaiting: state.playersWaiting }
+     playersWaiting: state.playersWaiting,
+     gameStarted: !!state.gameState }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): JoinDispProps  {
@@ -75,6 +81,7 @@ export interface JoinMapProps {
   token: string | undefined;
   websocketOpen: boolean;
   playersWaiting: number;
+  gameStarted: boolean;
 }
 
 export interface JoinDispProps {

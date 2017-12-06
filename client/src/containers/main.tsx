@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { Dispatch, bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
+
 import Join from './join.container';
+import ActiveGame from './active-game.container'
 // import * as _ from 'lodash';
 
 import { RootState } from '../models';
@@ -16,9 +19,10 @@ class Main extends React.Component<MainProps, any> {
     }
 
     return (
-      <div>
-         <Join />
-      </div>
+      <Switch>
+         <Route exact path='/' component={Join}/>
+         <Route path='/active-game' component={ActiveGame}/>
+      </Switch>
     );
   }
 }
@@ -28,7 +32,8 @@ function websocketConnect(token: string): WSConnectAction {
 }
 
 function mapStateToProps(state: RootState) {
-  return { token: state.token, websocketOpen: state.websocketOpen };
+  return { token: state.token,
+    websocketOpen: state.websocketOpen};
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): MainDispProps  {
