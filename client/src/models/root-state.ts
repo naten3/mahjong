@@ -1,4 +1,5 @@
 export interface RootState {
-  token?: string
+  token?: string;
   websocketOpen: boolean;
+  playersWaiting: number;
 }

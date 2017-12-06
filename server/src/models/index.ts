@@ -6,3 +6,4 @@ export * from './game-state';
 export * from './user';
 export * from './player';
 export * from './deck';
+export * from './websocket-payload'

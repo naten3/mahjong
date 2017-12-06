@@ -1,7 +1,7 @@
-import { Player, User, Deck } from './'
+import { Player, User, Deck, PlayerPosition, Tile } from './'
 
-export abstract class GameState {
-  gameStateType: GameStateType;
+export interface GameState {
+  type: GameStateType;
 }
 
 export enum GameStateType {
@@ -9,23 +9,24 @@ export enum GameStateType {
   ACTIVE = 'ACTIVE'
 }
 
-export class ActiveGameState extends GameState {
-  readonly gameStateType = GameStateType.ACTIVE
+export class ActiveGameState implements GameState {
+  readonly type = GameStateType.ACTIVE
   players: Array<Player>
   deck: Deck;
-  constructor(players: Array<Player>, deck: Deck) {
-    super()
+  currentTurn: PlayerPosition;
+  discard?: Tile;
+  constructor(players: Array<Player>, deck: Deck, currentTurn: PlayerPosition) {
     this.players = players;
     this.deck = deck;
+    this.currentTurn = currentTurn;
   }
 }
 
-export class WaitingGameState extends GameState {
-  readonly gameStateType = GameStateType.WAITING
-  users: Array<User>;
+export class WaitingGameState implements GameState {
+  readonly type = GameStateType.WAITING
+  waitingOnPlayers: Array<Player>;
 
-  constructor(users: Array<User>) {
-    super()
-    this.users = users;
+  constructor(waitingOnPlayers: Array<Player>) {
+    this.waitingOnPlayers = waitingOnPlayers;
   }
 }

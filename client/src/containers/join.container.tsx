@@ -28,35 +28,40 @@ class Join extends Component<JoinProps, JoinState> {
   }
 
   public render() {
-    return (
-      <form
-      className="input-group"
-      onSubmit={this.onFormSubmit}>
-        <input placeholder="Enter your name to join the game!"
-        className="form-control"
-        value={this.state.name}
-        onChange={this.onInputChange}
-        />
-        <span className="input-group-btn">
-          <button type="submit" className="btn btn-secondary">Submit</button>
-        </span>
-
-        {this.authenticationMessage(!!this.props.token)}
-      </form>
-    );
+    if (!this.props.websocketOpen) {
+      return this.nameMessage();
+    } else {
+      //TODO maybe another route when I have internet to research
+      return this.waitingForPlayers(this.props.playersWaiting)
+    }
   }
 
-  private authenticationMessage(authenticated: boolean) {
-    if (this.props.token) {
-    return <span> AUTHENTICATED!!! </span>;
-  } else {
-    return <span> NOT AUTHENTICATED!!! </span>;
+  private nameMessage() {
+    return (<form
+    className="input-group"
+    onSubmit={this.onFormSubmit}>
+      <input placeholder="Enter your name to join the game!"
+      className="form-control"
+      value={this.state.name}
+      onChange={this.onInputChange}
+      />
+      <span className="input-group-btn">
+        <button type="submit" className="btn btn-secondary">Submit</button>
+      </span>
+    </form>)
   }
+
+  private waitingForPlayers(playersWaiting) {
+    return (<div>Welcome! Waiting for Players. Currently {playersWaiting} Players</div>
+    )
   }
+
 }
 
 function mapStateToProps(state: RootState): JoinMapProps {
-  return { token: state.token }
+  return { token: state.token,
+    websocketOpen: state.websocketOpen,
+     playersWaiting: state.playersWaiting }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): JoinDispProps  {
@@ -70,6 +75,8 @@ export default connect(mapStateToProps, mapDispatchToProps)(Join);
 
 export interface JoinMapProps {
   token: string | undefined;
+  websocketOpen: boolean;
+  playersWaiting: number;
 }
 
 export interface JoinDispProps {

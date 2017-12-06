@@ -4,15 +4,21 @@ import * as http from 'http'
 import { Subject, Observable, ReplaySubject, BehaviorSubject } from 'rxjs'
 import * as JsonWebToken from 'jsonwebtoken';
 
+import {WsPayload} from '../models'
+
 
 export class UserWebsocket {
   //TODO handle multiple websockets
   userId: number;
-  messageSubject: Subject<string>; //todo more type safe
+  private messageSubject: Subject<string>; //todo more type safe
 
   constructor(userId: number, messageSubject: Subject<string>) {
     this.userId = userId;
     this.messageSubject = messageSubject;
+  }
+
+  send(payload: WsPayload<any>) {
+    this.messageSubject.next(JSON.stringify(payload))
   }
 }
 

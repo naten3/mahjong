@@ -8,11 +8,12 @@ import * as proxy from 'http-proxy-middleware';
 import * as Jwt from 'jwt-express'
 
 import { IndexRoute, UserRoute } from '../routes';
-import { UserService, WebsocketService} from '../services';
+import { UserService, WebsocketService, GameService} from '../services';
 
 export default function(websocketService: WebsocketService, secret: string) {
     //service initializations TODO DI?
     let userService: UserService = new UserService(secret);
+    let gameService: GameService = new GameService(userService, websocketService);
 
     let app: express.Express = express();
 
