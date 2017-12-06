@@ -65,13 +65,11 @@ function mapStateToProps(state: RootState): JoinMapProps {
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): JoinDispProps  {
-  // Wraps selectBook in a call to dispatch
   return bindActionCreators({ signIn }, dispatch);
 }
 
 // @ts-ignore: 2nd arg is an object of action creators wrapped in dispatch calls
 export default connect(mapStateToProps, mapDispatchToProps)(Join);
-
 
 export interface JoinMapProps {
   token: string | undefined;
