@@ -31,6 +31,7 @@ export default function(websocketService: WebsocketService, secret: string) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser());
+    console.log("DIRNAME IS " + __dirname)
     app.use(express.static(path.join(__dirname, "../../src/public")));
 
     if (app.get("env") === "development") {

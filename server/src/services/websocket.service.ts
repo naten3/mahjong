@@ -8,7 +8,7 @@ import {WsPayload} from '../models'
 
 
 export class UserWebsocket {
-  //TODO handle multiple websockets
+  //TODO handle multiple websockets in a browser
   userId: number;
   private messageSubject: Subject<string>; //todo more type safe
 

@@ -70,16 +70,16 @@ export enum HonorTileType {
 }
 
 export enum DragonTileType {
-  RED = 'R',
-  GREEN = 'G',
-  WHITE = 'W'
+  R = 'R',
+  G = 'G',
+  W = 'W'
 }
 
 export enum WindTileType {
-  EAST = 'E',
-  SOUTH = 'S',
-  WEST = 'W',
-  NORTH = 'N'
+  E = 'E',
+  S = 'S',
+  W = 'W',
+  N = 'N'
 }
 
 export enum BonusTileType {

@@ -43,7 +43,7 @@ export function gameStateToUser(gameState: GameState, userId: number): UserFacin
       let activeGameState = gameState as ActiveGameState
       let otherPlayers: Array<UserFacingPlayer> = activeGameState.players.filter(p => p.user.id !== userId)
       .map(p => playerToUserFacingPlayer(p));
-      let userHand = activeGameState.players.filter(p => p.user.id !== userId)[0].hand
+      let userHand = activeGameState.players.filter(p => p.user.id == userId)[0].hand
       return new UserFacingActiveGameState(otherPlayers, userHand, activeGameState.currentTurn)
     default: throw Error("unrecognized game state type")
   }
@@ -70,6 +70,7 @@ export function newGameState(users: Array<User>, options: GameOptions): ActiveGa
   let tiles = initializeDeck(options);
 
   let fetchPlayerHand: () => Hand = function() {
+    console.log("fetching new hand") //TODO debug code
     let playerTiles = tiles.slice(0, options.tilesPerHand)
     tiles = tiles.slice(options.tilesPerHand);
     return new Hand([], playerTiles);
@@ -129,7 +130,7 @@ function initializeDeck(options: GameOptions): Array<Tile> {
 
   if (options.bonusTiles) {
     for (let bonusTileType  of Object.keys(BonusTileType)) {
-      for (let j = 0; j < 4; j++) {
+      for (let j = 1; j <= 4; j++) {
         tiles.push(new Tile(nextId(), new BonusTile(j, bonusTileType as BonusTileType)))
       }
     }

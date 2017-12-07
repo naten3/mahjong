@@ -2,15 +2,20 @@ import { Component } from 'react';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
+import { Redirect } from 'react-router-dom'
 
 import { RootState, UserFacingGameState } from '../models'
+import MyHand from './my-hand.container'
 import {  } from '../actions';
 import {  } from '../actions/action-creators'
 
 class ActiveGame extends Component<ActiveGameProps, ActiveGameState> {
 
   public render() {
-    return <span> This is the Active Game! </span>
+    if (!this.props.gameState) {
+      return <Redirect to='/'/>;
+    }
+    return <div id="board"> <MyHand /> </div>
   }
 
 }
