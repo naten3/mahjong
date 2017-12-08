@@ -54,18 +54,15 @@ export default function(websocketService: WebsocketService, secret: string) {
 
     // production error handler
     app.use((err: any, req: express.Request, res: express.Response, next): void => {
-        res.status(err.status || 500).render("error", {
-            message: err.message,
-            error: {}
-        });
+      res.status(500);
+      res.json({ message: err.message, error: err, stack: err.stack});
     });
 
     if (app.get("env") === "development") {
         app.use((err: Error, req: express.Request, res: express.Response, next): void => {
-            res.status(500).render("error", {
-                message: err.message,
-                error: err
-            });
+          //TODO don't log stack in error
+            res.status(500);
+            res.json({ message: err.message, error: err, stack: err.stack});
         });
     }
 

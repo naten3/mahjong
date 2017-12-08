@@ -11,7 +11,7 @@ export class Hand {
   }
 
   public size(): number {
-    return this.melds.map(m => m.tiles.length).reduce((sum,n) => sum + n)
+    return this.melds.map(m => m.tiles.length).reduce((sum,n) => sum + n, 0)
     + this.freeTiles.length;
   }
 }

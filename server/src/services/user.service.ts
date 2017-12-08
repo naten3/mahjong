@@ -7,7 +7,7 @@ import { User } from '../models'
 export class UserService {
   secret: String;
   userMap: Map<number, User> = new Map()
-  id=0;
+  id=1;
 
   constructor(secret: String) {
     this.secret = secret;
