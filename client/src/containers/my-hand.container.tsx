@@ -21,7 +21,7 @@ class MyHand extends Component<MyHandProps, null> {
         <div id="my-hand">
           <div id="free-tiles">
             {this.freeTiles(agt.userHand.freeTiles)}
-          </div>  
+          </div>
         </div>)
     } else {
       //TODO
@@ -34,7 +34,7 @@ class MyHand extends Component<MyHandProps, null> {
   }
 
   private tileComponent(t: Tile) {
-    return (<TileComponent tile={t}/>);
+    return (<TileComponent key={t.id} tile={t}/>);
   }
 
 }

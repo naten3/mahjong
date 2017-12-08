@@ -28,7 +28,7 @@
     "grunt-ts": "^5.0.0-beta.1",
     "http-proxy-middleware": "^0.17.4",
     "jade": "~1.11.0",
-    "jwt-express": "^1.1.0",
+    "jwt-express": "file:src/module-forks/jwt-express",
     "load-grunt-tasks": "^3.2.0",
     "lodash": "^3.10.1",
     "mongoose": "^4.11.1",

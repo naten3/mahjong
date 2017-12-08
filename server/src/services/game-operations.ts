@@ -21,18 +21,66 @@ import {
   UserConcealedMeld,
   PlayerPosition } from '../models'
 
-// Hand operations
-function removeTile(hand: Hand, tileId: number): Hand {
-  if (!hand.freeTiles.find(tile => tile.id == tileId)) {
-    throw Error(`Tried to remove tile ${tileId} which is not present`)
+  let meldId = 0;
+  let nextMeldId: () => number = function(): number {
+    let result = meldId;
+    meldId++;
+    return result;
   }
-  return new Hand(hand.melds, hand.freeTiles.filter(tile => tile.id != tileId))
+
+export function makeMeld(gameState: ActiveGameState, ids: Array<number>, known: boolean, userId: number): ActiveGameState {
+  if (ids.length > 4) {
+    throw Error("Melds cannot be bigger than 4")
+  }
+  let player = matchingPlayer(gameState, userId);
+  let hand: Hand = player.hand
+  let partition = _.groupBy(hand.freeTiles, function(v) { return (ids.includes(v.id)) ? 'meldTiles' : 'freeTiles'; })
+  if (partition.meldTiles.length < 3) {
+    throw Error(`only ${partition.meldTiles.length} tiles matching `)
+  }
+  let newMeld = new Meld(nextMeldId(), known, partition.meldTiles);
+  let newMelds = hand.melds.slice(0);
+  newMelds.push(newMeld);
+  let newHand = new Hand(newMelds, partition.freeTiles)
+  return updatePlayer(gameState, player.withHand(newHand));
 }
 
-function addTile(hand: Hand, tile: Tile): Hand {
-  let freeTiles = hand.freeTiles.slice();
+export function draw(gameState: ActiveGameState, userId: number, handSize: number): ActiveGameState {
+  if (gameState.deck.isEmpty()) {
+    throw Error("The deck is empty!")
+  }
+  let player = matchingPlayer(gameState, userId);
+  if (player.hand.size() >= 1 + handSize) {
+    throw Error('Too many tiles!');
+  }
+  if(gameState.currentTurn != player.position) {
+    throw Error('Not your turn!');
+  }
+
+  let newDeck = new Deck(gameState.deck.tiles.slice(1));
+  let tile = gameState.deck.tiles[0];
+
+  let freeTiles = player.hand.freeTiles.slice(0);
   freeTiles.push(tile);
-  return new Hand(hand.melds, freeTiles);
+  let newHand: Hand = new Hand(player.hand.melds, freeTiles);
+  return updatePlayer(gameState, player.withHand(newHand));
+}
+
+function updatePlayer(gameState: ActiveGameState, player: Player ): ActiveGameState {
+  //get the player to make sure they are in the game
+  matchingPlayer(gameState, player.user.id);
+
+  let players = gameState.players.map(p => p.user.id == player.user.id ? player : p);
+  return new ActiveGameState(players, gameState.deck, gameState.currentTurn, gameState.discard);
+}
+
+function matchingPlayer(gameState: ActiveGameState, userId: number) {
+  let matchingPlayers = gameState.players.filter(p => p.user.id == userId);
+  if (matchingPlayers.length != 1) {
+    throw Error(`found ${matchingPlayers.length} matches for userId ${userId}`)
+  }
+  console.log(`found player matching with id ${matchingPlayers[0].user.id}`)
+  return matchingPlayers[0];
 }
 
 export function gameStateToUser(gameState: GameState, userId: number): UserFacingGameState {
@@ -86,7 +134,7 @@ export function newGameState(users: Array<User>, options: GameOptions): ActiveGa
   //TODO REQUIREMENT
   //EAST shouldn't always start, and players should keep their directions
   // maybe make newRoundStart?
-  return new ActiveGameState(players, deck, PlayerPosition.EAST)
+  return new ActiveGameState(players, deck, PlayerPosition.EAST, null)
 }
 
 export interface GameOptions {

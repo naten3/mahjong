@@ -7,7 +7,7 @@ import * as path from "path";
 import * as proxy from 'http-proxy-middleware';
 import * as Jwt from 'jwt-express'
 
-import { IndexRoute, UserRoute } from '../routes';
+import { IndexRoute, UserRoute, GameRoute } from '../routes';
 import { UserService, WebsocketService, GameService} from '../services';
 
 export default function(websocketService: WebsocketService, secret: string) {
@@ -44,6 +44,7 @@ export default function(websocketService: WebsocketService, secret: string) {
     //Routes
     new IndexRoute(app);
     new UserRoute(app, userService);
+    new GameRoute(app, gameService);
 
     // catch 404 and forward to error handler
     app.use((req: express.Request, res: express.Response, next: Function): void => {

@@ -11,5 +11,17 @@ const API_BASE_URL: string = '/api'
       type: ActionTypeKeys.SIGN_IN,
       payload: request
     }
+  }
 
+  export function draw(token: string): ApiResponseAction<TokenResponse>{
+    const url = `${API_BASE_URL}/game/draw`;
+    const request: Promise<AxiosResponse<any>> = Axios.get<any>(url, authHeaderOpt(token));
+    return {
+      type: ActionTypeKeys.DEAL,
+      payload: request
+    }
+  }
+
+  function authHeaderOpt(token: String) {
+    return {headers: {Authorization: `Bearer ${token}`}}
   }

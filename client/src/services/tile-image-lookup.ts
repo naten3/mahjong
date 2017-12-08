@@ -10,7 +10,7 @@ import { TileIdentifier,
   WindTileType,
   BonusTile,
   BonusTileType} from '../models'
-//todo where should this go
+  
 const numberTileMap = new Map([
   [NumberTileType.DOT, 'dot'],
   [NumberTileType.BAMBOO, 'bamboo'],

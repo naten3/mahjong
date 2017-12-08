@@ -19,6 +19,7 @@ export function fetchWeather(city: String): PromiseAction<AxiosResponse<Weather>
 
 export enum ActionTypeKeys {
   FETCH_WEATHER = 'FETCH_WEATHER',
+  DEAL = 'DEAL',
   SIGN_IN = 'SIGN_IN',
   SIGN_OUT = 'SIGN_OUT',
   SOCKET_RECEIVE = 'SOCKET_RECEIVE',

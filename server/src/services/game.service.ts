@@ -3,7 +3,8 @@ import * as Jwt from 'jwt-express'
 import * as GameOps from './game-operations'
 import { BehaviorSubject } from 'rxjs';
 
-import { User, PlayerCountChangeMessage, Deck, Tile, GameState, GameStateUpdate } from '../models'
+import { User, PlayerCountChangeMessage, Deck, Tile, GameState, GameStateUpdate,
+  GameStateType, ActiveGameState } from '../models'
 import { UserService, WebsocketService, UserWebsocket } from './'
 
 const PLAYERS_FOR_GAME: number = 4;
@@ -54,5 +55,13 @@ export class GameService {
         userWebSocket.send(updateMessage);
       });
     });
+  }
+
+  draw(userId: number) {
+    if (this.gameStateSubject.value.type != GameStateType.ACTIVE) {
+      throw Error("Can't draw, not an active game")
+    }
+    let gameState = GameOps.draw(this.gameStateSubject.value as ActiveGameState, userId, tilesPerHand)
+    this.setGameState(gameState);
   }
  }
