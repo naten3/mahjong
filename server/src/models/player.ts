@@ -19,8 +19,8 @@ position: PlayerPosition
 }
 
 export enum PlayerPosition {
-  EAST = 'E',
-  SOUTH = 'S',
-  WEST = 'W',
-  NORTH = 'N'
+  E = 'E',
+  S = 'S',
+  W = 'W',
+  N = 'N'
 }

@@ -54,7 +54,8 @@ export function draw(gameState: ActiveGameState, userId: number, handSize: numbe
     throw Error('Too many tiles!');
   }
   if(gameState.currentTurn != player.position) {
-    throw Error('Not your turn!');
+
+    throw Error(`current turn ${gameState.currentTurn} doens't match player position ${player.position}`);
   }
 
   let newDeck = new Deck(gameState.deck.tiles.slice(1));
@@ -86,7 +87,7 @@ function matchingPlayer(gameState: ActiveGameState, userId: number) {
 export function gameStateToUser(gameState: GameState, userId: number): UserFacingGameState {
   switch (gameState.type) {
     case GameStateType.WAITING:
-      return new UserFacingWaitingGameState([PlayerPosition.NORTH]); //TODO
+      return new UserFacingWaitingGameState([PlayerPosition.N]); //TODO
     case GameStateType.ACTIVE:
       let activeGameState = gameState as ActiveGameState
       let otherPlayers: Array<UserFacingPlayer> = activeGameState.players.filter(p => p.user.id !== userId)
@@ -134,7 +135,7 @@ export function newGameState(users: Array<User>, options: GameOptions): ActiveGa
   //TODO REQUIREMENT
   //EAST shouldn't always start, and players should keep their directions
   // maybe make newRoundStart?
-  return new ActiveGameState(players, deck, PlayerPosition.EAST, null)
+  return new ActiveGameState(players, deck, PlayerPosition.E, null)
 }
 
 export interface GameOptions {
