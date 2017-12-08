@@ -5,4 +5,5 @@ export * from './user-facing-game-state';
 export * from './meld';
 export * from './tile';
 export * from './tile-identifier';
-export * from './hand'
+export * from './hand';
+export * from './game-options';

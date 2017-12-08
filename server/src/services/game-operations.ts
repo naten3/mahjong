@@ -92,8 +92,9 @@ export function gameStateToUser(gameState: GameState, userId: number): UserFacin
       let activeGameState = gameState as ActiveGameState
       let otherPlayers: Array<UserFacingPlayer> = activeGameState.players.filter(p => p.user.id !== userId)
       .map(p => playerToUserFacingPlayer(p));
-      let userHand = activeGameState.players.filter(p => p.user.id == userId)[0].hand
-      return new UserFacingActiveGameState(otherPlayers, userHand, activeGameState.currentTurn)
+      let userPlayer = activeGameState.players.filter(p => p.user.id == userId)[0];
+      let userHand = userPlayer.hand;
+      return new UserFacingActiveGameState(otherPlayers, userHand, activeGameState.currentTurn, userPlayer.position)
     default: throw Error("unrecognized game state type")
   }
 }

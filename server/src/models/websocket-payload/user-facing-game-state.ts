@@ -23,11 +23,14 @@ export class UserFacingActiveGameState implements UserFacingGameState {
   otherPlayers: Array<UserFacingPlayer>;
   userHand: Hand;
   currentTurn: PlayerPosition;
+  myPosition: PlayerPosition;
 
-  constructor(otherPlayers: Array<UserFacingPlayer>, userHand: Hand, currentTurn: PlayerPosition) {
+  constructor(otherPlayers: Array<UserFacingPlayer>, userHand: Hand, currentTurn: PlayerPosition,
+  myPosition: PlayerPosition ) {
     this.otherPlayers = otherPlayers;
     this.userHand = userHand;
     this.currentTurn = currentTurn;
+    this.myPosition = myPosition;
   }
 }
 

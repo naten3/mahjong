@@ -18,17 +18,11 @@ export class UserFacingWaitingGameState implements UserFacingGameState{
   }
 }
 
-export class UserFacingActiveGameState implements UserFacingGameState {
-  type = UserFacingGameStateType.ACTIVE
+export interface UserFacingActiveGameState extends UserFacingGameState {
   otherPlayers: Array<UserFacingPlayer>;
   userHand: Hand;
   currentTurn: PlayerPosition;
-
-  constructor(otherPlayers: Array<UserFacingPlayer>, userHand: Hand, currentTurn: PlayerPosition) {
-    this.otherPlayers = otherPlayers;
-    this.userHand = userHand;
-    this.currentTurn = currentTurn;
-  }
+  myPosition: PlayerPosition;
 }
 
 export class UserFacingPlayer {
