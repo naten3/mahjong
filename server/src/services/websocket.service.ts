@@ -6,7 +6,6 @@ import * as JsonWebToken from 'jsonwebtoken';
 
 import {WsPayload} from '../models'
 
-
 export class UserWebsocket {
   //TODO handle multiple websockets in a browser
   userId: number;
@@ -27,11 +26,10 @@ export class WebsocketService {
   private secret: string;
   readonly PREFIX_URL = '/api/ws'
 
-   //TODO can I make this a big observable?
-  clients: Map<number, UserWebsocket> = new Map();
-  clientChangeObservable = new BehaviorSubject(new Map<number, UserWebsocket>());
-
-  onlineUsers: BehaviorSubject<Map<number, UserWebsocket>>  = new BehaviorSubject(new Map);
+  clients: Array<UserWebsocket> = [];
+  clients$ = new BehaviorSubject(this.clients);
+  addedUsers$ = new Subject<number>();
+  removedUsers$ = new Subject<number>();
 
   socksJsServer;
 
@@ -42,15 +40,37 @@ export class WebsocketService {
   }
 
   addUser(userId: number, uws: UserWebsocket) {
+    //todo filter unique user ids
     console.log(`adding user with id ${userId}`)
-    this.clients.set(userId, uws)
-    this.clientChangeObservable.next(this.clients);
+    this.clients.push(uws)
+    this.clients$.next(this.clients);
+    this.addedUsers$.next(uws.userId);
   }
 
   removeUser(userId: number) {
     console.log(`removing user with id ${userId}`)
-    this.clients.delete(userId)
-    this.clientChangeObservable.next(this.clients);
+    this.clients = this.clients.filter( w => w.userId != userId)
+    this.clients$.next(this.clients);
+    this.removedUsers$.next(userId);
+  }
+
+  // Returns observable of set filtered by user ids
+  public clientObservable(userIds: Array<number>): Observable<Array<UserWebsocket>> {
+    let wantedSet = new Set(userIds);
+    return this.clients$
+      .map(users => users
+      .filter(x => wantedSet.has(x.userId)))
+      .distinct()
+  }
+//TODO THIS IS A MESS
+  public addedUsers(userIds: Array<number>): Observable<number> {
+    let userSet = new Set(userIds);
+    return this.addedUsers$.filter(uid => userSet.has(uid));
+  }
+
+  public removedUsers(userIds: Array<number>): Observable<number> {
+    let userSet = new Set(userIds);
+    return this.addedUsers$.filter(uid => userSet.has(uid));
   }
 
   private onConnection(connection: Connection) {

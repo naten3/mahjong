@@ -6,9 +6,11 @@ import { applyMiddleware, createStore } from 'redux';
 import { Provider } from 'react-redux';
 import { createLogger } from 'redux-logger';
 import * as ReduxPromise from 'redux-promise';
+import { combineEpics, createEpicMiddleware } from 'redux-observable'
 
 import Main from './containers/main';
 import { socketMiddleware } from './middleware';
+import { drawEpic, requestGameStateEpic } from './epics'
 
 import rootReducer from './reducers';
 import './common.css';
@@ -23,8 +25,11 @@ function _getUrl() {
   return `${loc.protocol}//${loc.host}/api/ws`;
 }
 
+const rootEpic = combineEpics(drawEpic, requestGameStateEpic);
 
-const middlewares: any[] = [ReduxPromise, socketMiddleware(_getUrl())];
+const epicMiddleware = createEpicMiddleware(rootEpic);
+
+const middlewares: any[] = [ReduxPromise, socketMiddleware(_getUrl()), epicMiddleware];
 
 if (env === 'dev') {
   middlewares.push(createLogger());

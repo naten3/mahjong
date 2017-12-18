@@ -15,6 +15,7 @@ import {
   UserFacingGameStateType,
   UserFacingWaitingGameState,
   UserFacingActiveGameState,
+  UserNotStartedGameState,
   UserFacingPlayer,
   UserFacingMeld,
   UserKnownMeld,
@@ -88,11 +89,18 @@ export function gameStateToUser(gameState: GameState, userId: number): UserFacin
   switch (gameState.type) {
     case GameStateType.WAITING:
       return new UserFacingWaitingGameState([PlayerPosition.N]); //TODO
+    case GameStateType.NOT_STARTED:
+      console.log("returning not started state")
+      return new UserNotStartedGameState();
     case GameStateType.ACTIVE:
       let activeGameState = gameState as ActiveGameState
       let otherPlayers: Array<UserFacingPlayer> = activeGameState.players.filter(p => p.user.id !== userId)
       .map(p => playerToUserFacingPlayer(p));
       let userPlayer = activeGameState.players.filter(p => p.user.id == userId)[0];
+      if(!userPlayer) {
+        let message = `User with id ${userId} not in active game`;
+        console.log(message)
+        throw Error(message)}
       let userHand = userPlayer.hand;
       return new UserFacingActiveGameState(otherPlayers, userHand, activeGameState.currentTurn, userPlayer.position)
     default: throw Error("unrecognized game state type")

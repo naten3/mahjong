@@ -2,7 +2,7 @@ import Axios, {AxiosResponse} from 'axios';
 
 import { Action } from 'redux';
 
-import { Weather, WsPayload, TokenResponse } from '../models';
+import { Weather, WsPayload, TokenResponse, UserFacingGameState } from '../models';
 
 const API_KEY='5fe0935d1398f3033936b734d3839dc7';
 const ROOT_URL=`https://api.openweathermap.org/data/2.5/forecast?appid=${API_KEY}`;
@@ -19,7 +19,15 @@ export function fetchWeather(city: String): PromiseAction<AxiosResponse<Weather>
 
 export enum ActionTypeKeys {
   FETCH_WEATHER = 'FETCH_WEATHER',
-  DEAL = 'DEAL',
+
+  DRAW = 'DRAW',
+  DRAW_FAIL = 'DRAW_FAIL',
+  DRAW_SUCCESS = 'DRAW_SUCCESS',
+
+  REQUEST_GAME_STATE = 'REQUEST_GAME_STATE',
+  GAME_STATE_UPDATE = 'GAME_STATE_UPDATE',
+  REQUEST_GAME_STATE_FAIL = 'REQUEST_GAME_STATE_FAIL',
+
   SIGN_IN = 'SIGN_IN',
   SIGN_OUT = 'SIGN_OUT',
   SOCKET_RECEIVE = 'SOCKET_RECEIVE',
@@ -39,6 +47,31 @@ export interface FetchWeatherAction extends PayloadAction<AxiosResponse<Weather>
   type: ActionTypeKeys.FETCH_WEATHER;
 }
 
+export interface ApiRequestAction extends Action<ActionTypeKeys> {
+  token: string
+}
+
+export interface DrawAction extends ApiRequestAction {
+  type: ActionTypeKeys.DRAW;
+}
+
+export interface RequestGameStateAction extends ApiRequestAction {
+  type: ActionTypeKeys.REQUEST_GAME_STATE
+}
+
+export interface GameStateUpdateAction extends PayloadAction<UserFacingGameState> {
+  type: ActionTypeKeys.GAME_STATE_UPDATE;
+}
+
+export interface DrawSuccessAction extends Action<ActionTypeKeys> {
+  type: ActionTypeKeys.DRAW_SUCCESS;
+}
+
+export interface DrawFailAction extends Action<ActionTypeKeys> {
+  type: ActionTypeKeys.DRAW_FAIL;
+  message: string;
+}
+
 export interface SignInAction extends PayloadAction<AxiosResponse<TokenResponse>> {
   type: ActionTypeKeys.SIGN_IN;
 }
@@ -47,6 +80,7 @@ export interface SignOutAction extends Action<ActionTypeKeys> {
   type: ActionTypeKeys.SIGN_OUT;
 }
 
+//TODO remove redux promise and these
 export interface PromiseAction<T, _ extends PayloadAction<T>> {
   payload: Promise<T>;
   type: ActionTypeKeys;
@@ -89,6 +123,8 @@ export interface WSDisconnectedAction extends Action<ActionTypeKeys> {
 
 export type ActionTypes =
    | FetchWeatherAction
+   | DrawAction
+   | GameStateUpdateAction
    | SignInAction
    | SignOutAction
    | SocketReceiveAction

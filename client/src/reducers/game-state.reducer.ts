@@ -1,11 +1,10 @@
 import { } from 'redux'
 
-import { WSPayloadTypeKey, UserFacingGameState, GameStateUpdate } from '../models'
+import { WSPayloadTypeKey, UserFacingGameState, UserFacingGameStateType, GameStateUpdate } from '../models'
 import { ActionTypeKeys, ActionTypes } from '../actions';
 
-
-export function gameStateReducer(state: UserFacingGameState | null = null,
-     action: ActionTypes ): UserFacingGameState | null {
+export function gameStateReducer(state: UserFacingGameState = { type: UserFacingGameStateType.UNKNOWN},
+     action: ActionTypes ): UserFacingGameState {
   switch(action.type) {
   case ActionTypeKeys.SOCKET_RECEIVE:
     if (action.payload.type == WSPayloadTypeKey.GAME_STATE_UPDATE) {
@@ -13,6 +12,8 @@ export function gameStateReducer(state: UserFacingGameState | null = null,
     } else {
       return state
     }
+  case ActionTypeKeys.GAME_STATE_UPDATE:
+    return action.payload  
   default:
     return state;
   }

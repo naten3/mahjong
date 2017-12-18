@@ -1,7 +1,7 @@
 import Axios, {AxiosResponse} from 'axios';
 
 import { TokenResponse } from '../models'
-import { ApiResponseAction, ActionTypeKeys } from './'
+import { ApiResponseAction, ActionTypeKeys, DrawAction, RequestGameStateAction } from './'
 const API_BASE_URL: string = '/api'
 
   export function signIn(name: string): ApiResponseAction<TokenResponse> {
@@ -13,15 +13,17 @@ const API_BASE_URL: string = '/api'
     }
   }
 
-  export function draw(token: string): ApiResponseAction<TokenResponse>{
-    const url = `${API_BASE_URL}/game/draw`;
-    const request: Promise<AxiosResponse<any>> = Axios.get<any>(url, authHeaderOpt(token));
+//TODO don't need action creator for this probably
+  export function draw(token: string): DrawAction {
     return {
-      type: ActionTypeKeys.DEAL,
-      payload: request
+      type: ActionTypeKeys.DRAW,
+      token
     }
   }
 
-  function authHeaderOpt(token: String) {
-    return {headers: {Authorization: `Bearer ${token}`}}
+  export function requestGameState(token: string): RequestGameStateAction {
+    return {
+      type: ActionTypeKeys.REQUEST_GAME_STATE,
+      token
+    }
   }

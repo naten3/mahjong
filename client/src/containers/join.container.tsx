@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators, Dispatch } from 'redux';
 import { Redirect } from 'react-router-dom'
 
-import { TokenResponse, RootState } from '../models'
+import { TokenResponse, RootState, UserFacingGameStateType } from '../models'
 import { ApiResponseAction } from '../actions';
 import { signIn } from '../actions/action-creators'
 
@@ -29,10 +29,10 @@ class Join extends Component<JoinProps, JoinState> {
   }
 
   public render() {
-    if (this.props.gameStarted) {
+    if (this.props.token && this.props.gameStarted) {
       return <Redirect to='/active-game'/>;
     } else {
-      if (!this.props.websocketOpen) {
+      if (!this.props.websocketOpen || !this.props.token) {
         return this.nameMessage();
       } else {
         //TODO maybe another route when I have internet to research
@@ -67,7 +67,7 @@ function mapStateToProps(state: RootState): JoinMapProps {
   return { token: state.token,
     websocketOpen: state.websocketOpen,
      playersWaiting: state.playersWaiting,
-     gameStarted: !!state.gameState }
+     gameStarted: state.gameState.type == UserFacingGameStateType.ACTIVE }
 }
 
 function mapDispatchToProps(dispatch: Dispatch<any>): JoinDispProps  {

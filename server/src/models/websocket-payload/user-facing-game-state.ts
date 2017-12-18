@@ -6,7 +6,8 @@ export interface UserFacingGameState {
 
 export enum UserFacingGameStateType {
   ACTIVE = 'ACTIVE',
-  WAITING = 'WAITING'
+  WAITING = 'WAITING',
+  NOT_STARTED = 'NOT_STARTED'
 }
 
 export class UserFacingWaitingGameState implements UserFacingGameState{
@@ -16,6 +17,10 @@ export class UserFacingWaitingGameState implements UserFacingGameState{
   constructor(waitingOnPlayers: Array<PlayerPosition>) {
     this.waitingOnPlayers = waitingOnPlayers;
   }
+}
+
+export class UserNotStartedGameState implements UserFacingGameState {
+  type = UserFacingGameStateType.NOT_STARTED;
 }
 
 export class UserFacingActiveGameState implements UserFacingGameState {

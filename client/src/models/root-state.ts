@@ -4,6 +4,6 @@ export interface RootState {
   token?: string;
   websocketOpen: boolean;
   playersWaiting: number;
-  gameState?: UserFacingGameState;
+  gameState: UserFacingGameState;
   gameOptions: GameOptions;
 }
